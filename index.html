@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tipografi Lirik & 6 Foto Sinematik 16:9</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Playfair Display (Serif) & Plus Jakarta Sans (Modern Sans) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,400;1,600;1,700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        serif: ['"Playfair Display"', 'serif'],
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Reset & Base Pure Black Canvas */
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000000;
+            color: #ffffff;
+            overflow: hidden;
+        }
+
+        /* Bingkai Utama Rasio 16:9 yang Presisi di Tengah Layar */
+        .stage-16-9 {
+            position: relative;
+            width: min(96vw, calc(94vh * (16 / 9)));
+            aspect-ratio: 16 / 9;
+            background-color: #050507;
+            border-radius: 1.25rem;
+            overflow: hidden;
+            box-shadow:
+                0 30px 90px rgba(0, 0, 0, 0.95),
+                0 0 0 1px rgba(255, 255, 255, 0.08);
+            transform: scale(0.96);
+            transition: transform 2.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .stage-16-9.revealed {
+            transform: scale(1);
+        }
+
+        @media (max-width: 640px) {
+            .stage-16-9 {
+                width: 100vw;
+                border-radius: 0;
+                box-shadow: none;
+            }
+        }
+
+        /* =========================================================
+           3. ANIMASI TRANSISI SINEMATIK RINGAN (GPU-ACCELERATED)
+           ========================================================= */
+        .photo-slide {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            z-index: 1;
+            transform: translate3d(0, 0, 0) scale(1.03);
+            will-change: transform, opacity;
+            backface-visibility: hidden;
+            transition: opacity 1.35s cubic-bezier(0.22, 1, 0.36, 1);
+            animation-play-state: paused;
+        }
+
+        /* Foto yang sedang aktif */
+        .photo-slide.is-active {
+            opacity: 1;
+            z-index: 3;
+            animation-play-state: running;
+        }
+
+        /* Foto sebelumnya yang sedang memudar keluar (crossfade ringan) */
+        .photo-slide.is-leaving {
+            opacity: 0;
+            z-index: 2;
+            animation-play-state: paused;
+        }
+
+        /* Variasi 1: Ken Burns Slow Zoom-In (Foto 1 & Foto 5) */
+        .photo-slide.anim-zoom-in {
+            animation: motionZoomIn 12s linear forwards;
+        }
+
+        @keyframes motionZoomIn {
+            0% { transform: translate3d(0%, 0%, 0) scale(1.0); }
+            100% { transform: translate3d(-1%, -1%, 0) scale(1.09); }
+        }
+
+        /* Variasi 2: Smooth Pan Geser Kanan Ringan (Foto 2) */
+        .photo-slide.anim-pan-right {
+            animation: motionPanRight 12s linear forwards;
+        }
+
+        @keyframes motionPanRight {
+            0% { transform: translate3d(-2%, 0%, 0) scale(1.08); }
+            100% { transform: translate3d(2%, -0.5%, 0) scale(1.08); }
+        }
+
+        /* Variasi 3: Cinematic Zoom-Out Reveal (Foto 3) */
+        .photo-slide.anim-zoom-out {
+            animation: motionZoomOut 12s linear forwards;
+        }
+
+        @keyframes motionZoomOut {
+            0% { transform: translate3d(0.8%, 0.8%, 0) scale(1.11); }
+            100% { transform: translate3d(0%, 0%, 0) scale(1.01); }
+        }
+
+        /* Variasi 4: Smooth Pan Geser Kiri Ringan (Foto 4) */
+        .photo-slide.anim-pan-left {
+            animation: motionPanLeft 12s linear forwards;
+        }
+
+        @keyframes motionPanLeft {
+            0% { transform: translate3d(2%, 0.5%, 0) scale(1.08); }
+            100% { transform: translate3d(-2%, -0.5%, 0) scale(1.08); }
+        }
+
+        /* Variasi 5: Drift Diagonal Sinematik Ringan (Foto 6) */
+        .photo-slide.anim-drift-diagonal {
+            animation: motionDriftDiagonal 12s linear forwards;
+        }
+
+        @keyframes motionDriftDiagonal {
+            0% { transform: translate3d(-1.2%, 1.2%, 0) scale(1.02); }
+            100% { transform: translate3d(1.2%, -1.2%, 0) scale(1.09); }
+        }
+
+        /* =========================================================
+           4. TIPOGRAFI KINETIK (KINETIC LYRIC TYPOGRAPHY)
+           ========================================================= */
+        .lyric-wrapper {
+            transition: opacity 0.65s ease, transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .lyric-wrapper.switching {
+            opacity: 0;
+            transform: translateY(-14px) scale(0.98);
+        }
+
+        /* Kata demi kata (Staggered Blur-Up & Scale-In) */
+        .k-word {
+            display: inline-block;
+            opacity: 0.18;
+            transform: translateY(18px) scale(0.94);
+            filter: blur(6px);
+            transition:
+                opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+                filter 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+                text-shadow 0.65s ease,
+                color 0.65s ease;
+            margin: 0 0.16em;
+        }
+
+        .k-word.revealed {
+            opacity: 1;
+            transform: translateY(0px) scale(1);
+            filter: blur(0px);
+            color: #fffafd;
+            text-shadow:
+                0 2px 14px rgba(0, 0, 0, 0.85),
+                0 0 12px rgba(255, 255, 255, 0.36),
+                0 0 24px rgba(255, 195, 222, 0.22);
+        }
+
+        /* Tekstur film grain halus */
+        .film-grain {
+            background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 0);
+            background-size: 22px 22px;
+        }
+
+        /* =========================================================
+           LAYAR TIRAI HITAM & TOMBOL BUBBLE SOFT PINK
+           ========================================================= */
+        .black-curtain {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #000000;
+            opacity: 1;
+            pointer-events: auto;
+            transition: opacity 1.35s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .black-curtain.fade-away,
+        .black-curtain.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .bubble-btn {
+            position: relative;
+            z-index: 10000;
+            pointer-events: auto;
+            touch-action: manipulation;
+            width: 6.25rem;
+            height: 6.25rem;
+            border-radius: 9999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #fff5f9;
+            background: radial-gradient(circle at 30% 25%, rgba(255, 240, 247, 0.72), rgba(249, 168, 212, 0.34) 55%, rgba(244, 114, 182, 0.24) 100%);
+            border: 1px solid rgba(251, 207, 232, 0.65);
+            box-shadow:
+                inset 0 2px 10px rgba(255, 255, 255, 0.65),
+                inset 0 -8px 18px rgba(244, 114, 182, 0.35),
+                0 0 34px rgba(244, 114, 182, 0.38),
+                0 14px 32px rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(8px);
+            animation: bubbleFloat 3.4s ease-in-out infinite;
+            transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.35s ease, box-shadow 0.35s ease;
+        }
+
+        .bubble-btn > * {
+            pointer-events: none;
+        }
+
+        .bubble-btn:hover {
+            transform: scale(1.07);
+            box-shadow:
+                inset 0 2px 12px rgba(255, 255, 255, 0.8),
+                inset 0 -8px 20px rgba(244, 114, 182, 0.45),
+                0 0 46px rgba(249, 168, 212, 0.58),
+                0 18px 36px rgba(0, 0, 0, 0.8);
+        }
+
+        .bubble-btn:active {
+            transform: scale(0.95);
+        }
+
+        .bubble-btn.bubble-pop {
+            transform: scale(1.42);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        @keyframes bubbleFloat {
+            0%, 100% {
+                transform: translate3d(0, 0, 0);
+            }
+            50% {
+                transform: translate3d(0, -6px, 0);
+            }
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center bg-black">
+
+    <!-- Tirai Hitam Pembuka & Penutup dengan Tombol Bubble Soft Pink -->
+    <div id="black-curtain" class="black-curtain">
+        <button id="bubble-action-btn" type="button" class="bubble-btn" aria-label="Putar Tayangan">
+            <svg id="icon-play" class="w-9 h-9 translate-x-0.5 drop-shadow" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M8 5.5v13l10.5-6.5L8 5.5z"></path>
+            </svg>
+            <svg id="icon-replay" class="w-8 h-8 hidden drop-shadow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M3 12a9 9 0 1 0 3-6.7L3 8"></path>
+                <path d="M3 3v5h5"></path>
+            </svg>
+        </button>
+    </div>
+
+    <!-- =========================================================
+         LATAR BELAKANG AMBIENT RINGAN DI LUAR FRAME 16:9
+         ========================================================= -->
+    <div id="ambient-backdrop" class="fixed inset-0 pointer-events-none opacity-15 scale-105 bg-cover bg-center transition-opacity duration-1000 z-0" style="background: radial-gradient(circle at center, rgba(255, 165, 206, 0.14) 0%, #000000 72%);"></div>
+
+    <!-- =========================================================
+         PANGGUNG UTAMA RASIO 16:9 (6 FOTO + TIPOGRAFI LIRIK)
+         ========================================================= -->
+    <main id="stage-16-9" class="stage-16-9 z-10 pointer-events-none flex items-center justify-center">
+        
+        <!-- Layer 1: 6 Foto 16:9 (Di-render otomatis via JavaScript) -->
+        <div id="photo-layer" class="absolute inset-0 w-full h-full pointer-events-none"></div>
+
+        <!-- Layer 2: Gradient Gelap Sinematik Ringan agar Teks Sangat Terbaca -->
+        <div class="absolute inset-0 z-10 pointer-events-none bg-gradient-to-t from-black/75 via-black/30 to-black/50"></div>
+
+        <!-- Layer 3: Tipografi Lirik Kinetik di Tengah Panggung -->
+        <div class="relative z-20 w-full max-w-4xl px-6 sm:px-14 md:px-20 text-center pointer-events-none">
+            <div id="lyric-wrapper" class="lyric-wrapper flex flex-col items-center justify-center">
+                
+                <!-- Baris Utama Lirik (Serif Elegan + Animasi Kata demi Kata) -->
+                <h1 id="lyric-main-text" class="font-serif italic font-semibold text-2xl sm:text-4xl md:text-5xl lg:text-[3.4rem] leading-snug text-white">
+                    &nbsp;
+                </h1>
+
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        /**
+         * ============================================================================
+         * KONFIGURASI UTAMA (SILAKAN UBAH FOTO, LAGU, DAN LIRIK DI BAGIAN INI)
+         * ============================================================================
+         */
+
+        // 1. FILE / URL LAGU (MP3 / WAV / OGG)
+        // Masukkan path file lokal (misalnya: "audio.mp3") atau link audio langsung.
+        // Jika dikosongkan (""), melodi lembut sintetis Web Audio API akan otomatis diputar sebagai fallback.
+        const AUDIO_URL = "audio.mp3";
+
+        // Total durasi tayangan dalam detik (~84.32 detik sesuai durasi lagu/video, otomatis mengikuti panjang audio jika tersedia).
+        const DEFAULT_DURATION = 84.32;
+
+        // 2. DAFTAR 6 FOTO BERASIO 16:9
+        // Letakkan file foto1.jpg s.d. foto6.jpg di folder yang sama dengan index.html.
+        const PHOTOS = [
+            {
+                url: "foto1.jpeg",
+                transition: "anim-zoom-in"        // Transisi 1: Ken Burns slow zoom-in
+            },
+            {
+                url: "foto2.jpeg",
+                transition: "anim-pan-right"      // Transisi 2: Smooth pan geser kanan
+            },
+            {
+                url: "foto3.jpeg",
+                transition: "anim-zoom-out"       // Transisi 3: Cinematic zoom-out
+            },
+            {
+                url: "foto4.jpeg",
+                transition: "anim-pan-left"       // Transisi 4: Pan kiri
+            },
+            {
+                url: "foto5.jpeg",
+                transition: "anim-zoom-in"        // Transisi 5: Ken Burns slow zoom-in
+            },
+            {
+                url: "foto6.jpeg",
+                transition: "anim-drift-diagonal" // Transisi 6: Drift diagonal sinematik
+            }
+        ];
+
+        // 3. DAFTAR LIRIK & WAKTU KEMUNCULAN PER DETIK (~84.3 DETIK)
+        // Sesuaikan `time` (dalam detik) bila ingin menggeser ketukan tiap baris lirik.
+        // - `time` : detik keberapa baris lirik mulai muncul
+        // - `text` : baris lirik utama yang mengalir lembut kata demi kata
+        const LYRICS = [
+            {
+                time: 6.0,
+                text: "Sebentar saja ku ingin cerita"
+            },
+            {
+                time: 12.0,
+                text: "Tentang dia yang teristimewa"
+            },
+            {
+                time: 18.5,
+                text: "Kadang lucu kadang menyebalkan ya..."
+            },
+            {
+                time: 24.8,
+                text: "Oh... tapi aku suka"
+            },
+            {
+                time: 31.0,
+                text: "Dia tak pandai merangkai kata-kata"
+            },
+            {
+                time: 37.0,
+                text: "Romantisnya pun seadanya"
+            },
+            {
+                time: 43.5,
+                text: "Tapi aku bingung entah kenapa"
+            },
+            {
+                time: 49.8,
+                text: "Oh... nyaman di dekatnya"
+            },
+            {
+                time: 57.5,
+                text: "Aku suka sama kamu"
+            },
+            {
+                time: 63.8,
+                text: "Aku aman di dekatmu"
+            },
+            {
+                time: 70.0,
+                text: "Aku nyaman bersamamu"
+            },
+            {
+                time: 76.5,
+                text: "Aku senang punya kamu"
+            }
+        ];
+
+
+        /**
+         * ============================================================================
+         * MESIN AUDIO INSTRUMENTAL AMBIENT BAWAAN (WEB AUDIO API FALLBACK)
+         * ============================================================================
+         */
+        class AmbientPianoEngine {
+            constructor() {
+                this.ctx = null;
+                this.masterGain = null;
+                this.timer = null;
+                this.isPlaying = false;
+                this.step = 0;
+
+                // Progresi akor melankolis: Cmaj7 -> Am7 -> Fmaj7 -> G6
+                this.chords = [
+                    [261.63, 329.63, 392.00, 493.88],
+                    [220.00, 261.63, 329.63, 392.00],
+                    [174.61, 220.00, 261.63, 329.63],
+                    [196.00, 246.94, 293.66, 329.63]
+                ];
+                this.melody = [523.25, 493.88, 392.00, 440.00, 329.63, 392.00, 293.66, 329.63];
+            }
+
+            init() {
+                try {
+                    if (!this.ctx) {
+                        const AudioContext = window.AudioContext || window.webkitAudioContext;
+                        if (!AudioContext) return;
+                        this.ctx = new AudioContext();
+                        this.masterGain = this.ctx.createGain();
+                        this.masterGain.gain.setValueAtTime(0.36, this.ctx.currentTime);
+                        this.masterGain.connect(this.ctx.destination);
+                    }
+                    if (this.ctx && this.ctx.state === "suspended") {
+                        this.ctx.resume().catch(() => {});
+                    }
+                } catch (_) {
+                    // Abaikan jika Web Audio API diblokir browser
+                }
+            }
+
+            start() {
+                this.init();
+                if (!this.ctx || !this.masterGain) return;
+                if (this.isPlaying) return;
+                this.isPlaying = true;
+                this.step = 0;
+                try {
+                    this.masterGain.gain.cancelScheduledValues(this.ctx.currentTime);
+                    this.masterGain.gain.setValueAtTime(0.01, this.ctx.currentTime);
+                    this.masterGain.gain.linearRampToValueAtTime(0.36, this.ctx.currentTime + 1.5);
+                } catch (_) {}
+
+                this.tick();
+                this.timer = setInterval(() => this.tick(), 750);
+            }
+// ... existing code ... -->
+        // 4. Mulai tayangan saat tombol bubble Play / Replay diklik
+        function startPlayback() {
+            if (playbackState.isRunning) return;
+
+            // Animasi gelembung meletus halus
+            if (bubbleActionBtn) {
+                bubbleActionBtn.classList.add("bubble-pop");
+            }
+
+            // Reset state ke awal
+            playbackState.isRunning = true;
+            playbackState.isEnding = false;
+            playbackState.elapsed = 0;
+            playbackState.currentPhotoIdx = -1;
+            playbackState.currentLyricIdx = -1;
+
+            lyricMainText.innerHTML = "&nbsp;";
+
+            // Aktifkan foto pertama & mulai musik dengan penanganan error aman di Chrome
+            activatePhoto(0);
+
+            if (customAudio) {
+                try {
+                    customAudio.currentTime = 0;
+                    customAudio.volume = 1;
+                    const playPromise = customAudio.play();
+                    if (playPromise && typeof playPromise.catch === "function") {
+                        playPromise.catch(() => {
+                            pianoEngine.start();
+                        });
+                    }
+                } catch (_) {
+                    pianoEngine.start();
+                }
+            } else {
+                pianoEngine.start();
+            }
+
+            // Tirai hitam pekat menghilang perlahan membuka panggung 16:9
+            setTimeout(() => {
+                if (blackCurtain) {
+                    blackCurtain.classList.add("fade-away", "hidden");
+                }
+                if (stage16x9) {
+                    stage16x9.classList.add("revealed");
+                }
+            }, 300);
+
+            // Jalankan loop animasi utama
+            if (playbackState.rafId) {
+                cancelAnimationFrame(playbackState.rafId);
+            }
+            playbackState.lastTimestamp = performance.now();
+            playbackState.rafId = requestAnimationFrame(updateLoop);
+        }
+
+        function startShow() {
+            startPlayback();
+        }
+// ... existing code ... -->
+            // Munculkan kembali tirai hitam pekat & kembalikan tombol bubble
+            stage16x9.classList.remove("revealed");
+            blackCurtain.classList.remove("fade-away", "hidden");
+
+            setTimeout(() => {
+                bubbleActionBtn.classList.remove("bubble-pop");
+            }, 900);
+        }
+
+        function bindBubbleClickListener() {
+            const btn = document.getElementById("bubble-action-btn");
+            if (btn && !btn.dataset.boundClick) {
+                btn.dataset.boundClick = "true";
+                btn.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    startPlayback();
+                });
+            }
+        }
+
+        // Pasang listener klik langsung jika elemen sudah tersedia serta saat DOMContentLoaded
+        bindBubbleClickListener();
+
+        // Inisialisasi saat halaman dimuat
+        window.addEventListener("DOMContentLoaded", () => {
+            bindBubbleClickListener();
+            buildPhotoElements();
+
+            if (customAudio) {
+                customAudio.addEventListener("loadedmetadata", () => {
+                    if (customAudio.duration && !isNaN(customAudio.duration)) {
+                        playbackState.totalDuration = customAudio.duration;
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
