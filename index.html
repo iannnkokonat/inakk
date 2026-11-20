@@ -2,12 +2,12 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tipografi Lirik & 6 Foto Sinematik 16:9</title>
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Tipografi Lirik &amp; 6 Foto Sinematik 16:9</title>
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
+
     <!-- Google Fonts: Playfair Display (Serif) & Plus Jakarta Sans (Modern Sans) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -42,6 +42,7 @@
             background-color: #000000;
             color: #ffffff;
             overflow: hidden;
+            font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
         /* Bingkai Utama Rasio 16:9 yang Presisi di Tengah Layar */
@@ -63,16 +64,31 @@
             transform: scale(1);
         }
 
-        @media (max-width: 640px) {
+        @media (max-width: 768px) {
             .stage-16-9 {
                 width: 100vw;
+                max-width: 100vw;
+                max-height: 100vh;
                 border-radius: 0;
                 box-shadow: none;
             }
         }
 
+        /* Mode fallback layar penuh untuk HP (terutama iOS Safari yang membatasi requestFullscreen) */
+        body.mobile-pseudo-fullscreen .stage-16-9 {
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            max-width: none;
+            max-height: none;
+            aspect-ratio: auto;
+            border-radius: 0;
+            z-index: 40;
+        }
+
         /* =========================================================
-           3. ANIMASI TRANSISI SINEMATIK RINGAN (GPU-ACCELERATED)
+           ANIMASI TRANSISI SINEMATIK RINGAN (GPU-ACCELERATED)
            ========================================================= */
         .photo-slide {
             position: absolute;
@@ -89,21 +105,18 @@
             animation-play-state: paused;
         }
 
-        /* Foto yang sedang aktif */
         .photo-slide.is-active {
             opacity: 1;
             z-index: 3;
             animation-play-state: running;
         }
 
-        /* Foto sebelumnya yang sedang memudar keluar (crossfade ringan) */
         .photo-slide.is-leaving {
             opacity: 0;
             z-index: 2;
             animation-play-state: paused;
         }
 
-        /* Variasi 1: Ken Burns Slow Zoom-In (Foto 1 & Foto 5) */
         .photo-slide.anim-zoom-in {
             animation: motionZoomIn 12s linear forwards;
         }
@@ -113,7 +126,6 @@
             100% { transform: translate3d(-1%, -1%, 0) scale(1.09); }
         }
 
-        /* Variasi 2: Smooth Pan Geser Kanan Ringan (Foto 2) */
         .photo-slide.anim-pan-right {
             animation: motionPanRight 12s linear forwards;
         }
@@ -123,7 +135,6 @@
             100% { transform: translate3d(2%, -0.5%, 0) scale(1.08); }
         }
 
-        /* Variasi 3: Cinematic Zoom-Out Reveal (Foto 3) */
         .photo-slide.anim-zoom-out {
             animation: motionZoomOut 12s linear forwards;
         }
@@ -133,7 +144,6 @@
             100% { transform: translate3d(0%, 0%, 0) scale(1.01); }
         }
 
-        /* Variasi 4: Smooth Pan Geser Kiri Ringan (Foto 4) */
         .photo-slide.anim-pan-left {
             animation: motionPanLeft 12s linear forwards;
         }
@@ -143,7 +153,6 @@
             100% { transform: translate3d(-2%, -0.5%, 0) scale(1.08); }
         }
 
-        /* Variasi 5: Drift Diagonal Sinematik Ringan (Foto 6) */
         .photo-slide.anim-drift-diagonal {
             animation: motionDriftDiagonal 12s linear forwards;
         }
@@ -154,7 +163,7 @@
         }
 
         /* =========================================================
-           4. TIPOGRAFI KINETIK (KINETIC LYRIC TYPOGRAPHY)
+           TIPOGRAFI KINETIK (KINETIC LYRIC TYPOGRAPHY)
            ========================================================= */
         .lyric-wrapper {
             transition: opacity 0.65s ease, transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
@@ -165,7 +174,6 @@
             transform: translateY(-14px) scale(0.98);
         }
 
-        /* Kata demi kata (Staggered Blur-Up & Scale-In) */
         .k-word {
             display: inline-block;
             opacity: 0.18;
@@ -191,19 +199,13 @@
                 0 0 24px rgba(255, 195, 222, 0.22);
         }
 
-        /* Tekstur film grain halus */
-        .film-grain {
-            background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 0);
-            background-size: 22px 22px;
-        }
-
         /* =========================================================
            LAYAR TIRAI HITAM & TOMBOL BUBBLE SOFT PINK
            ========================================================= */
         .black-curtain {
             position: fixed;
             inset: 0;
-            z-index: 9999;
+            z-index: 9990;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -214,14 +216,14 @@
         }
 
         .black-curtain.fade-away,
-        .black-curtain.hidden {
+        .black-curtain.is-dismissed {
             opacity: 0;
             pointer-events: none;
         }
 
         .bubble-btn {
             position: relative;
-            z-index: 10000;
+            z-index: 9995;
             pointer-events: auto;
             touch-action: manipulation;
             width: 6.25rem;
@@ -275,9 +277,53 @@
                 transform: translate3d(0, -6px, 0);
             }
         }
+
+        /* Kontrol khusus HP (Saran Landscape & Tombol Fullscreen) */
+        .mobile-controls {
+            display: none;
+        }
+
+        @media (hover: none) and (pointer: coarse), (max-width: 768px) {
+            .mobile-controls {
+                display: block;
+            }
+        }
     </style>
 </head>
 <body class="flex items-center justify-center bg-black">
+
+    <!-- Kontrol Khusus HP: Banner Saran Landscape & Tombol Fullscreen -->
+    <div class="mobile-controls fixed inset-x-0 top-0 z-[10000] pointer-events-none p-3">
+        <div class="flex items-start justify-between gap-2">
+            <!-- Peringatan Saran Mode Landscape saat posisi portrait -->
+            <div id="landscape-hint-banner" class="pointer-events-auto hidden items-center gap-2.5 rounded-full bg-zinc-950/90 border border-pink-300/35 px-3.5 py-2 text-xs text-pink-100 shadow-lg backdrop-blur-md">
+                <svg class="w-4 h-4 shrink-0 text-pink-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect x="4" y="6" width="16" height="12" rx="2"></rect>
+                    <path d="M12 3v1"></path>
+                    <path d="M12 20v1"></path>
+                </svg>
+                <span>Putar HP ke <strong>Landscape</strong> agar rasio 16:9 lebih pas</span>
+                <button id="dismiss-landscape-btn" type="button" class="ml-1 text-pink-200/70 hover:text-white text-xs px-1" aria-label="Tutup saran">✕</button>
+            </div>
+
+            <!-- Tombol Fullscreen Khusus HP -->
+            <button id="mobile-fullscreen-btn" type="button" class="pointer-events-auto ml-auto flex items-center gap-1.5 rounded-full bg-zinc-950/90 border border-white/20 px-3.5 py-2 text-xs font-medium text-white shadow-lg backdrop-blur-md active:scale-95 transition" aria-label="Mode Layar Penuh">
+                <svg id="fs-icon-enter" class="w-4 h-4 text-pink-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M8 3H5a2 2 0 0 0-2 2v3"></path>
+                    <path d="M21 8V5a2 2 0 0 0-2-2h-3"></path>
+                    <path d="M3 16v3a2 2 0 0 0 2 2h3"></path>
+                    <path d="M16 21h3a2 2 0 0 0 2-2v-3"></path>
+                </svg>
+                <svg id="fs-icon-exit" class="w-4 h-4 text-pink-200 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M8 3v3a2 2 0 0 1-2 2H3"></path>
+                    <path d="M21 8h-3a2 2 0 0 1-2-2V3"></path>
+                    <path d="M3 16h3a2 2 0 0 1 2 2v3"></path>
+                    <path d="M16 21v-3a2 2 0 0 1 2-2h3"></path>
+                </svg>
+                <span id="fs-label">Fullscreen</span>
+            </button>
+        </div>
+    </div>
 
     <!-- Tirai Hitam Pembuka & Penutup dengan Tombol Bubble Soft Pink -->
     <div id="black-curtain" class="black-curtain">
@@ -292,141 +338,55 @@
         </button>
     </div>
 
-    <!-- =========================================================
-         LATAR BELAKANG AMBIENT RINGAN DI LUAR FRAME 16:9
-         ========================================================= -->
+    <!-- Latar Belakang Ambient Ringan di Luar Frame 16:9 -->
     <div id="ambient-backdrop" class="fixed inset-0 pointer-events-none opacity-15 scale-105 bg-cover bg-center transition-opacity duration-1000 z-0" style="background: radial-gradient(circle at center, rgba(255, 165, 206, 0.14) 0%, #000000 72%);"></div>
 
-    <!-- =========================================================
-         PANGGUNG UTAMA RASIO 16:9 (6 FOTO + TIPOGRAFI LIRIK)
-         ========================================================= -->
-    <main id="stage-16-9" class="stage-16-9 z-10 pointer-events-none flex items-center justify-center">
-        
-        <!-- Layer 1: 6 Foto 16:9 (Di-render otomatis via JavaScript) -->
+    <!-- Panggung Utama Rasio 16:9 (6 Foto + Tipografi Lirik) -->
+    <main id="stage-16-9" class="stage-16-9 z-10 flex items-center justify-center">
+        <!-- Layer 1: 6 Foto 16:9 -->
         <div id="photo-layer" class="absolute inset-0 w-full h-full pointer-events-none"></div>
 
-        <!-- Layer 2: Gradient Gelap Sinematik Ringan agar Teks Sangat Terbaca -->
+        <!-- Layer 2: Gradient Gelap Sinematik Ringan -->
         <div class="absolute inset-0 z-10 pointer-events-none bg-gradient-to-t from-black/75 via-black/30 to-black/50"></div>
 
-        <!-- Layer 3: Tipografi Lirik Kinetik di Tengah Panggung -->
+        <!-- Layer 3: Tipografi Lirik Kinetik -->
         <div class="relative z-20 w-full max-w-4xl px-6 sm:px-14 md:px-20 text-center pointer-events-none">
             <div id="lyric-wrapper" class="lyric-wrapper flex flex-col items-center justify-center">
-                
-                <!-- Baris Utama Lirik (Serif Elegan + Animasi Kata demi Kata) -->
                 <h1 id="lyric-main-text" class="font-serif italic font-semibold text-2xl sm:text-4xl md:text-5xl lg:text-[3.4rem] leading-snug text-white">
                     &nbsp;
                 </h1>
-
             </div>
         </div>
-
     </main>
 
     <script>
-        /**
-         * ============================================================================
-         * KONFIGURASI UTAMA (SILAKAN UBAH FOTO, LAGU, DAN LIRIK DI BAGIAN INI)
-         * ============================================================================
-         */
-
-        // 1. FILE / URL LAGU (MP3 / WAV / OGG)
-        // Masukkan path file lokal (misalnya: "audio.mp3") atau link audio langsung.
-        // Jika dikosongkan (""), melodi lembut sintetis Web Audio API akan otomatis diputar sebagai fallback.
         const AUDIO_URL = "audio.mp3";
-
-        // Total durasi tayangan dalam detik (~84.32 detik sesuai durasi lagu/video, otomatis mengikuti panjang audio jika tersedia).
         const DEFAULT_DURATION = 84.32;
 
-        // 2. DAFTAR 6 FOTO BERASIO 16:9
-        // Letakkan file foto1.jpg s.d. foto6.jpg di folder yang sama dengan index.html.
         const PHOTOS = [
-            {
-                url: "foto1.jpeg",
-                transition: "anim-zoom-in"        // Transisi 1: Ken Burns slow zoom-in
-            },
-            {
-                url: "foto2.jpeg",
-                transition: "anim-pan-right"      // Transisi 2: Smooth pan geser kanan
-            },
-            {
-                url: "foto3.jpeg",
-                transition: "anim-zoom-out"       // Transisi 3: Cinematic zoom-out
-            },
-            {
-                url: "foto4.jpeg",
-                transition: "anim-pan-left"       // Transisi 4: Pan kiri
-            },
-            {
-                url: "foto5.jpeg",
-                transition: "anim-zoom-in"        // Transisi 5: Ken Burns slow zoom-in
-            },
-            {
-                url: "foto6.jpeg",
-                transition: "anim-drift-diagonal" // Transisi 6: Drift diagonal sinematik
-            }
+            { url: "foto1.jpeg", transition: "anim-zoom-in" },
+            { url: "foto2.jpeg", transition: "anim-pan-right" },
+            { url: "foto3.jpeg", transition: "anim-zoom-out" },
+            { url: "foto4.jpeg", transition: "anim-pan-left" },
+            { url: "foto5.jpeg", transition: "anim-zoom-in" },
+            { url: "foto6.jpeg", transition: "anim-drift-diagonal" }
         ];
 
-        // 3. DAFTAR LIRIK & WAKTU KEMUNCULAN PER DETIK (~84.3 DETIK)
-        // Sesuaikan `time` (dalam detik) bila ingin menggeser ketukan tiap baris lirik.
-        // - `time` : detik keberapa baris lirik mulai muncul
-        // - `text` : baris lirik utama yang mengalir lembut kata demi kata
         const LYRICS = [
-            {
-                time: 6.0,
-                text: "Sebentar saja ku ingin cerita"
-            },
-            {
-                time: 12.0,
-                text: "Tentang dia yang teristimewa"
-            },
-            {
-                time: 18.5,
-                text: "Kadang lucu kadang menyebalkan ya..."
-            },
-            {
-                time: 24.8,
-                text: "Oh... tapi aku suka"
-            },
-            {
-                time: 31.0,
-                text: "Dia tak pandai merangkai kata-kata"
-            },
-            {
-                time: 37.0,
-                text: "Romantisnya pun seadanya"
-            },
-            {
-                time: 43.5,
-                text: "Tapi aku bingung entah kenapa"
-            },
-            {
-                time: 49.8,
-                text: "Oh... nyaman di dekatnya"
-            },
-            {
-                time: 57.5,
-                text: "Aku suka sama kamu"
-            },
-            {
-                time: 63.8,
-                text: "Aku aman di dekatmu"
-            },
-            {
-                time: 70.0,
-                text: "Aku nyaman bersamamu"
-            },
-            {
-                time: 76.5,
-                text: "Aku senang punya kamu"
-            }
+            { time: 6.0, text: "Sebentar saja ku ingin cerita" },
+            { time: 12.0, text: "Tentang dia yang teristimewa" },
+            { time: 18.5, text: "Kadang lucu kadang menyebalkan ya..." },
+            { time: 24.8, text: "Oh... tapi aku suka" },
+            { time: 31.0, text: "Dia tak pandai merangkai kata-kata" },
+            { time: 37.0, text: "Romantisnya pun seadanya" },
+            { time: 43.5, text: "Tapi aku bingung entah kenapa" },
+            { time: 49.8, text: "Oh... nyaman di dekatnya" },
+            { time: 57.5, text: "Aku suka sama kamu" },
+            { time: 63.8, text: "Aku aman di dekatmu" },
+            { time: 70.0, text: "Aku nyaman bersamamu" },
+            { time: 76.5, text: "Aku senang punya kamu" }
         ];
 
-
-        /**
-         * ============================================================================
-         * MESIN AUDIO INSTRUMENTAL AMBIENT BAWAAN (WEB AUDIO API FALLBACK)
-         * ============================================================================
-         */
         class AmbientPianoEngine {
             constructor() {
                 this.ctx = null;
@@ -435,7 +395,6 @@
                 this.isPlaying = false;
                 this.step = 0;
 
-                // Progresi akor melankolis: Cmaj7 -> Am7 -> Fmaj7 -> G6
                 this.chords = [
                     [261.63, 329.63, 392.00, 493.88],
                     [220.00, 261.63, 329.63, 392.00],
@@ -458,15 +417,44 @@
                     if (this.ctx && this.ctx.state === "suspended") {
                         this.ctx.resume().catch(() => {});
                     }
-                } catch (_) {
-                    // Abaikan jika Web Audio API diblokir browser
+                } catch (_) {}
+            }
+
+            playNote(freq, duration, gainPeak = 0.08, type = "sine") {
+                if (!this.ctx || !this.masterGain) return;
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, now);
+
+                gain.gain.setValueAtTime(0.0001, now);
+                gain.gain.linearRampToValueAtTime(gainPeak, now + 0.08);
+                gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
+                osc.connect(gain);
+                gain.connect(this.masterGain);
+                osc.start(now);
+                osc.stop(now + duration + 0.05);
+            }
+
+            tick() {
+                if (!this.ctx || !this.isPlaying) return;
+                const chordIdx = Math.floor(this.step / 8) % this.chords.length;
+                const chord = this.chords[chordIdx];
+
+                if (this.step % 8 === 0) {
+                    chord.forEach((freq) => this.playNote(freq, 5.2, 0.045, "sine"));
                 }
+
+                const note = this.melody[this.step % this.melody.length];
+                this.playNote(note, 1.4, 0.07, "triangle");
+                this.step++;
             }
 
             start() {
                 this.init();
-                if (!this.ctx || !this.masterGain) return;
-                if (this.isPlaying) return;
+                if (!this.ctx || !this.masterGain || this.isPlaying) return;
                 this.isPlaying = true;
                 this.step = 0;
                 try {
@@ -478,26 +466,208 @@
                 this.tick();
                 this.timer = setInterval(() => this.tick(), 750);
             }
-// ... existing code ... -->
-        // 4. Mulai tayangan saat tombol bubble Play / Replay diklik
+
+            stop() {
+                this.isPlaying = false;
+                if (this.timer) {
+                    clearInterval(this.timer);
+                    this.timer = null;
+                }
+            }
+        }
+
+        const blackCurtain = document.getElementById("black-curtain");
+        const bubbleActionBtn = document.getElementById("bubble-action-btn");
+        const iconPlay = document.getElementById("icon-play");
+        const iconReplay = document.getElementById("icon-replay");
+        const stage16x9 = document.getElementById("stage-16-9");
+        const photoLayer = document.getElementById("photo-layer");
+        const lyricWrapper = document.getElementById("lyric-wrapper");
+        const lyricMainText = document.getElementById("lyric-main-text");
+
+        const landscapeBanner = document.getElementById("landscape-hint-banner");
+        const dismissLandscapeBtn = document.getElementById("dismiss-landscape-btn");
+        const mobileFullscreenBtn = document.getElementById("mobile-fullscreen-btn");
+        const fsIconEnter = document.getElementById("fs-icon-enter");
+        const fsIconExit = document.getElementById("fs-icon-exit");
+        const fsLabel = document.getElementById("fs-label");
+
+        const pianoEngine = new AmbientPianoEngine();
+        const customAudio = AUDIO_URL ? new Audio(AUDIO_URL) : null;
+        if (customAudio) {
+            customAudio.preload = "metadata";
+        }
+
+        const playbackState = {
+            isRunning: false,
+            isEnding: false,
+            elapsed: 0,
+            totalDuration: DEFAULT_DURATION,
+            currentPhotoIdx: -1,
+            currentLyricIdx: -1,
+            lastTimestamp: 0,
+            rafId: null,
+            wordTimers: [],
+            landscapeDismissed: false,
+            pseudoFullscreen: false
+        };
+
+        function buildPhotoElements() {
+            if (!photoLayer || photoLayer.children.length > 0) return;
+            PHOTOS.forEach((photo, idx) => {
+                const img = document.createElement("img");
+                img.src = photo.url;
+                img.alt = `Foto sinematik ${idx + 1}`;
+                img.className = `photo-slide ${photo.transition}`;
+                img.dataset.index = String(idx);
+                photoLayer.appendChild(img);
+            });
+        }
+
+        function activatePhoto(index) {
+            if (!photoLayer) return;
+            const slides = Array.from(photoLayer.querySelectorAll(".photo-slide"));
+            if (!slides.length) return;
+
+            const safeIdx = ((index % slides.length) + slides.length) % slides.length;
+            if (safeIdx === playbackState.currentPhotoIdx) return;
+
+            slides.forEach((slide, i) => {
+                slide.classList.remove("is-active", "is-leaving");
+                if (i === playbackState.currentPhotoIdx) {
+                    slide.classList.add("is-leaving");
+                }
+            });
+
+            const activeSlide = slides[safeIdx];
+            activeSlide.style.animation = "none";
+            void activeSlide.offsetWidth;
+            activeSlide.style.animation = "";
+            activeSlide.classList.add("is-active");
+
+            playbackState.currentPhotoIdx = safeIdx;
+        }
+
+        function clearWordTimers() {
+            playbackState.wordTimers.forEach((id) => clearTimeout(id));
+            playbackState.wordTimers = [];
+        }
+
+        function renderLyricLine(text) {
+            clearWordTimers();
+            if (!lyricMainText || !lyricWrapper) return;
+
+            lyricWrapper.classList.add("switching");
+
+            const switchTimer = setTimeout(() => {
+                const words = text.trim().split(/\s+/);
+                lyricMainText.innerHTML = words
+                    .map((word, idx) => `<span class="k-word" data-widx="${idx}">${word}</span>`)
+                    .join("");
+
+                lyricWrapper.classList.remove("switching");
+
+                const spans = lyricMainText.querySelectorAll(".k-word");
+                spans.forEach((span, i) => {
+                    const t = setTimeout(() => {
+                        span.classList.add("revealed");
+                    }, 90 + i * 130);
+                    playbackState.wordTimers.push(t);
+                });
+            }, 220);
+
+            playbackState.wordTimers.push(switchTimer);
+        }
+
+        function finishPlayback() {
+            if (playbackState.isEnding) return;
+            playbackState.isEnding = true;
+            playbackState.isRunning = false;
+
+            if (playbackState.rafId) {
+                cancelAnimationFrame(playbackState.rafId);
+                playbackState.rafId = null;
+            }
+            clearWordTimers();
+            pianoEngine.stop();
+
+            if (customAudio) {
+                try {
+                    customAudio.pause();
+                } catch (_) {}
+            }
+
+            if (iconPlay) iconPlay.classList.add("hidden");
+            if (iconReplay) iconReplay.classList.remove("hidden");
+
+            if (stage16x9) stage16x9.classList.remove("revealed");
+            if (blackCurtain) blackCurtain.classList.remove("fade-away", "is-dismissed");
+
+            setTimeout(() => {
+                if (bubbleActionBtn) bubbleActionBtn.classList.remove("bubble-pop");
+            }, 600);
+        }
+
+        function updateLoop(timestamp) {
+            if (!playbackState.isRunning) return;
+
+            const dt = Math.min(0.25, Math.max(0, (timestamp - playbackState.lastTimestamp) / 1000));
+            playbackState.lastTimestamp = timestamp;
+
+            if (customAudio && !customAudio.paused && !customAudio.ended && !isNaN(customAudio.currentTime)) {
+                playbackState.elapsed = customAudio.currentTime;
+            } else {
+                playbackState.elapsed += dt;
+            }
+
+            const total = playbackState.totalDuration || DEFAULT_DURATION;
+            const photoSpan = total / PHOTOS.length;
+            const targetPhotoIdx = Math.min(PHOTOS.length - 1, Math.floor(playbackState.elapsed / photoSpan));
+            if (targetPhotoIdx !== playbackState.currentPhotoIdx) {
+                activatePhoto(targetPhotoIdx);
+            }
+
+            let activeLyricIdx = -1;
+            for (let i = LYRICS.length - 1; i >= 0; i--) {
+                if (playbackState.elapsed >= LYRICS[i].time) {
+                    activeLyricIdx = i;
+                    break;
+                }
+            }
+
+            if (activeLyricIdx !== -1 && activeLyricIdx !== playbackState.currentLyricIdx) {
+                playbackState.currentLyricIdx = activeLyricIdx;
+                renderLyricLine(LYRICS[activeLyricIdx].text);
+            }
+
+            if (playbackState.elapsed >= total || (customAudio && customAudio.ended)) {
+                finishPlayback();
+                return;
+            }
+
+            playbackState.rafId = requestAnimationFrame(updateLoop);
+        }
+
         function startPlayback() {
             if (playbackState.isRunning) return;
 
-            // Animasi gelembung meletus halus
+            buildPhotoElements();
+
             if (bubbleActionBtn) {
                 bubbleActionBtn.classList.add("bubble-pop");
             }
 
-            // Reset state ke awal
             playbackState.isRunning = true;
             playbackState.isEnding = false;
             playbackState.elapsed = 0;
             playbackState.currentPhotoIdx = -1;
             playbackState.currentLyricIdx = -1;
+            clearWordTimers();
 
-            lyricMainText.innerHTML = "&nbsp;";
+            if (lyricMainText) {
+                lyricMainText.innerHTML = "&nbsp;";
+            }
 
-            // Aktifkan foto pertama & mulai musik dengan penanganan error aman di Chrome
             activatePhoto(0);
 
             if (customAudio) {
@@ -506,9 +676,7 @@
                     customAudio.volume = 1;
                     const playPromise = customAudio.play();
                     if (playPromise && typeof playPromise.catch === "function") {
-                        playPromise.catch(() => {
-                            pianoEngine.start();
-                        });
+                        playPromise.catch(() => pianoEngine.start());
                     }
                 } catch (_) {
                     pianoEngine.start();
@@ -517,17 +685,15 @@
                 pianoEngine.start();
             }
 
-            // Tirai hitam pekat menghilang perlahan membuka panggung 16:9
             setTimeout(() => {
                 if (blackCurtain) {
-                    blackCurtain.classList.add("fade-away", "hidden");
+                    blackCurtain.classList.add("fade-away", "is-dismissed");
                 }
                 if (stage16x9) {
                     stage16x9.classList.add("revealed");
                 }
-            }, 300);
+            }, 250);
 
-            // Jalankan loop animasi utama
             if (playbackState.rafId) {
                 cancelAnimationFrame(playbackState.rafId);
             }
@@ -535,37 +701,113 @@
             playbackState.rafId = requestAnimationFrame(updateLoop);
         }
 
-        function startShow() {
-            startPlayback();
-        }
-// ... existing code ... -->
-            // Munculkan kembali tirai hitam pekat & kembalikan tombol bubble
-            stage16x9.classList.remove("revealed");
-            blackCurtain.classList.remove("fade-away", "hidden");
-
-            setTimeout(() => {
-                bubbleActionBtn.classList.remove("bubble-pop");
-            }, 900);
+        function isPortraitMobile() {
+            const isSmallScreen = window.innerWidth <= 900 || window.matchMedia("(pointer: coarse)").matches;
+            const isPortrait = window.innerHeight > window.innerWidth;
+            return isSmallScreen && isPortrait;
         }
 
-        function bindBubbleClickListener() {
-            const btn = document.getElementById("bubble-action-btn");
-            if (btn && !btn.dataset.boundClick) {
-                btn.dataset.boundClick = "true";
-                btn.addEventListener("click", (e) => {
-                    e.preventDefault();
-                    startPlayback();
-                });
+        function updateLandscapeBanner() {
+            if (!landscapeBanner) return;
+            if (isPortraitMobile() && !playbackState.landscapeDismissed) {
+                landscapeBanner.classList.remove("hidden");
+                landscapeBanner.classList.add("flex");
+            } else {
+                landscapeBanner.classList.add("hidden");
+                landscapeBanner.classList.remove("flex");
             }
         }
 
-        // Pasang listener klik langsung jika elemen sudah tersedia serta saat DOMContentLoaded
-        bindBubbleClickListener();
+        function isFullscreenActive() {
+            return Boolean(
+                document.fullscreenElement ||
+                document.webkitFullscreenElement ||
+                playbackState.pseudoFullscreen
+            );
+        }
 
-        // Inisialisasi saat halaman dimuat
+        function syncFullscreenUi() {
+            const active = isFullscreenActive();
+            if (fsIconEnter) fsIconEnter.classList.toggle("hidden", active);
+            if (fsIconExit) fsIconExit.classList.toggle("hidden", !active);
+            if (fsLabel) fsLabel.textContent = active ? "Keluar FS" : "Fullscreen";
+        }
+
+        async function toggleMobileFullscreen() {
+            const target = document.documentElement;
+            try {
+                if (!isFullscreenActive()) {
+                    if (target.requestFullscreen) {
+                        await target.requestFullscreen();
+                    } else if (target.webkitRequestFullscreen) {
+                        target.webkitRequestFullscreen();
+                    } else {
+                        playbackState.pseudoFullscreen = true;
+                        document.body.classList.add("mobile-pseudo-fullscreen");
+                    }
+                } else {
+                    if (document.fullscreenElement && document.exitFullscreen) {
+                        await document.exitFullscreen();
+                    } else if (document.webkitFullscreenElement && document.webkitExitFullscreen) {
+                        document.webkitExitFullscreen();
+                    }
+                    playbackState.pseudoFullscreen = false;
+                    document.body.classList.remove("mobile-pseudo-fullscreen");
+                }
+            } catch (_) {
+                // Fallback jika Fullscreen API ditolak browser/iOS
+                playbackState.pseudoFullscreen = !playbackState.pseudoFullscreen;
+                document.body.classList.toggle("mobile-pseudo-fullscreen", playbackState.pseudoFullscreen);
+            }
+            syncFullscreenUi();
+        }
+
+        if (bubbleActionBtn) {
+            bubbleActionBtn.addEventListener("click", (e) => {
+                e.preventDefault();
+                startPlayback();
+            });
+        }
+
+        if (dismissLandscapeBtn) {
+            dismissLandscapeBtn.addEventListener("click", () => {
+                playbackState.landscapeDismissed = true;
+                updateLandscapeBanner();
+            });
+        }
+
+        if (mobileFullscreenBtn) {
+            mobileFullscreenBtn.addEventListener("click", (e) => {
+                e.preventDefault();
+                toggleMobileFullscreen();
+            });
+        }
+
+        document.addEventListener("fullscreenchange", () => {
+            if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+                playbackState.pseudoFullscreen = false;
+                document.body.classList.remove("mobile-pseudo-fullscreen");
+            }
+            syncFullscreenUi();
+        });
+
+        document.addEventListener("webkitfullscreenchange", () => {
+            if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+                playbackState.pseudoFullscreen = false;
+                document.body.classList.remove("mobile-pseudo-fullscreen");
+            }
+            syncFullscreenUi();
+        });
+
+        window.addEventListener("resize", updateLandscapeBanner);
+        window.addEventListener("orientationchange", () => {
+            setTimeout(updateLandscapeBanner, 120);
+        });
+
         window.addEventListener("DOMContentLoaded", () => {
-            bindBubbleClickListener();
             buildPhotoElements();
+            updateLandscapeBanner();
+            syncFullscreenUi();
 
             if (customAudio) {
                 customAudio.addEventListener("loadedmetadata", () => {
